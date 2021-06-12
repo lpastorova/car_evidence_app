@@ -29,6 +29,7 @@ func newRouter() *mux.Router {
 
 	r.HandleFunc("/bird", getBirdHandler).Methods("GET")
 	r.HandleFunc("/bird", createBirdHandler).Methods("POST")
+	fmt.Println("go to localhost:8080/assets")
 	return r
 }
 
