@@ -43,6 +43,10 @@ func main() {
 	}
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
+func handler(w http.ResponseWriter, _ *http.Request) {
+	_, err := fmt.Fprintf(w, "Hello World!")
+	if err != nil {
+		fmt.Println(fmt.Errorf("error: %v", err))
+		return
+	}
 }

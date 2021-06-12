@@ -13,19 +13,23 @@ type Bird struct {
 
 var birds []Bird
 
-func getBirdHandler(w http.ResponseWriter, r *http.Request) {
+func getBirdHandler(w http.ResponseWriter, _ *http.Request) {
 	//Convert the "birds" variable to json
 	birdListBytes, err := json.Marshal(birds)
 
 	// If there is an error, print it to the console, and return a server
 	// error response to the user
 	if err != nil {
-		fmt.Println(fmt.Errorf("Error: %v", err))
+		fmt.Println(fmt.Errorf("error: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	// If all goes well, write the JSON list of birds to the response
-	w.Write(birdListBytes)
+	_, err = w.Write(birdListBytes)
+	if err != nil {
+		fmt.Println(fmt.Errorf("error: %v", err))
+		return
+	}
 }
 
 func createBirdHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +43,7 @@ func createBirdHandler(w http.ResponseWriter, r *http.Request) {
 
 	// In case of any error, we respond with an error to the user
 	if err != nil {
-		fmt.Println(fmt.Errorf("Error: %v", err))
+		fmt.Println(fmt.Errorf("error: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

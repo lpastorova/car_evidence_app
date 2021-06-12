@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -65,7 +66,12 @@ func TestRouter(t *testing.T) {
 	}
 
 	// In the next few lines, the response body is read, and converted to a string
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 	// read the body into a bunch of bytes (b)
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -100,7 +106,12 @@ func TestRouterForNonExistentRoute(t *testing.T) {
 	}
 
 	// The code to test the body is also mostly the same, except this time, we need an empty body
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
