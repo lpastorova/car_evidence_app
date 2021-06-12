@@ -36,8 +36,8 @@ func newRouter() *mux.Router {
 	// with "/assets/", instead of the absolute route itself
 	r.PathPrefix("/assets/").Handler(staticFileHandler).Methods("GET")
 
-	r.HandleFunc("/bird", getBirdHandler).Methods("GET")
-	r.HandleFunc("/bird", createBirdHandler).Methods("POST")
+	r.HandleFunc("/car", getCarHandler).Methods("GET")
+	r.HandleFunc("/car", createCarHandler).Methods("POST")
 	fmt.Println("go to localhost:8080/assets")
 	return r
 }

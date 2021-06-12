@@ -3,38 +3,43 @@ package main
 import "database/sql"
 
 type Store interface {
-	CreateBird(bird *Bird) error
-	GetBirds() ([]*Bird, error)
+	CreateCar(car *Car) error
+	GetCar() ([]*Car, error)
 }
 
 type dbStore struct {
 	db *sql.DB
 }
 
-func (store *dbStore) CreateBird(bird *Bird) error {
-	_, err := store.db.Query("INSERT INTO birds(species, description) VALUES($1,$2)", bird.Species, bird.Description)
+func (store *dbStore) CreateCar(car *Car) error {
+	_, err := store.db.Query("INSERT INTO cars(spz, description) VALUES($1,$2)", car.Spz, car.Description)
 	return err
 }
 
-func (store *dbStore) GetBirds() ([]*Bird, error) {
-	rows, err := store.db.Query("SELECT species, description FROM birds")
+func (store *dbStore) GetCar() ([]*Car, error) {
+	rows, err := store.db.Query("SELECT spz, description FROM cars")
 
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
 
-	birds := []*Bird{}
+		}
+	}(rows)
+
+	cars := []*Car{}
 
 	for rows.Next() {
-		bird := &Bird{}
-		if err := rows.Scan(&bird.Species, &bird.Description); err != nil {
+		car := &Car{}
+		if err := rows.Scan(&car.Spz, &car.Description); err != nil {
 			return nil, err
 		}
-		birds = append(birds, bird)
+		cars = append(cars, car)
 
 	}
-	return birds, nil
+	return cars, nil
 }
 
 var store Store

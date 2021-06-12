@@ -1,0 +1,6 @@
+
+table { border-collapse: collapse; border-spacing: 0 }
+table th, table td { padding: .5em; border: 1px solid #999; }
+table caption { text-align: left }
+table th { text-align: left; background-color: #ccc }
+table th,table td { padding: .5em; } 

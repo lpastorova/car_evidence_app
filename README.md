@@ -1,5 +1,8 @@
-# birdpedia
-
-https://www.sohamkamani.com/golang/how-to-build-a-web-application/
-https://www.sohamkamani.com/blog/2017/10/18/golang-adding-database-to-web-application/
-https://github.com/sohamkamani/blog_example__go_web_db/blob/master/assets/index.html
+### car evidence app
+database driver class for open office : org.postgresql.Driver
+ - software in db_driver needs to be installed
+ - initialize the db with db/create_table.sql
+ - to connect from excel, use:
+        Data>new query>form database>postgre 
+ - server: localhost:5432 
+ - name: postgres
