@@ -15,6 +15,9 @@ var birds []Bird
 
 func getBirdHandler(w http.ResponseWriter, _ *http.Request) {
 	//Convert the "birds" variable to json
+
+	birds, err := store.GetBirds()
+
 	birdListBytes, err := json.Marshal(birds)
 
 	// If there is an error, print it to the console, and return a server
@@ -52,8 +55,10 @@ func createBirdHandler(w http.ResponseWriter, r *http.Request) {
 	bird.Species = r.Form.Get("species")
 	bird.Description = r.Form.Get("description")
 
-	// Append our existing list of birds with a new entry
-	birds = append(birds, bird)
+	err = store.CreateBird(&bird)
+	if err != nil {
+		fmt.Println("Err creating bird, ", err)
+	}
 
 	//Finally, we redirect the user to the original HTMl page (located at `/assets/`)
 	http.Redirect(w, r, "/assets/", http.StatusFound)

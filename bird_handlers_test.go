@@ -11,10 +11,15 @@ import (
 )
 
 func TestGetBirdsHandler(t *testing.T) {
+	// Initialize the mock store
+	mockStore := InitMockStore()
 
-	birds = []Bird{
-		{"sparrow", "A small harmless bird"},
-	}
+	/* Define the data that we want to return when the mocks `GetBirds` method is
+	called
+	Also, we expect it to be called only once
+	*/
+	mockStore.On("GetBirds").Return([]*Bird{
+		{"sparrow", "A small harmless bird"}}, nil).Once()
 
 	req, err := http.NewRequest("GET", "", nil)
 
@@ -25,6 +30,8 @@ func TestGetBirdsHandler(t *testing.T) {
 
 	hf := http.HandlerFunc(getBirdHandler)
 
+	// Now, when the handler is called, it should cal our mock store, instead of
+	// the actual one
 	hf.ServeHTTP(recorder, req)
 
 	if status := recorder.Code; status != http.StatusOK {
@@ -45,12 +52,20 @@ func TestGetBirdsHandler(t *testing.T) {
 	if actual != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v", actual, expected)
 	}
+
+	// the expectations that we defined in the `On` method are asserted here
+	mockStore.AssertExpectations(t)
 }
+
 func TestCreateBirdsHandler(t *testing.T) {
 
-	birds = []Bird{
-		{"sparrow", "A small harmless bird"},
-	}
+	mockStore := InitMockStore()
+	/*
+	 Similarly, we define our expectations for th `CreateBird` method.
+	 We expect the first argument to the method to be the bird struct
+	 defined below, and tell the mock to return a `nil` error
+	*/
+	mockStore.On("CreateBird", &Bird{"eagle", "A bird of prey"}).Return(nil)
 
 	form := newCreateBirdForm()
 	req, err := http.NewRequest("POST", "", bytes.NewBufferString(form.Encode()))
@@ -70,18 +85,7 @@ func TestCreateBirdsHandler(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
-
-	expected := Bird{"eagle", "A bird of prey"}
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	actual := birds[1]
-
-	if actual != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v", actual, expected)
-	}
+	mockStore.AssertExpectations(t)
 }
 
 func newCreateBirdForm() *url.Values {

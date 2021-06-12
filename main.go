@@ -1,10 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"net/http"
-
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
+	"net/http"
+)
+
+const (
+	host     = "localhost"
+	port     = 5432
+	user     = "postgres"
+	password = "example"
+	dbname   = "postgres"
 )
 
 // The new router function creates the router and
@@ -36,8 +45,24 @@ func newRouter() *mux.Router {
 func main() {
 	// The router is now formed by calling the `newRouter` constructor function
 	// that we defined above. The rest of the code stays the same
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+
+	if err != nil {
+		panic(err)
+	}
+	err = db.Ping()
+
+	if err != nil {
+		panic(err)
+	}
+
+	InitStore(&dbStore{db: db})
 	r := newRouter()
-	err := http.ListenAndServe(":8080", r)
+	err = http.ListenAndServe(":8080", r)
 	if err != nil {
 		panic(err.Error())
 	}
